@@ -1,8 +1,10 @@
-import Head from 'next/head'
-import Image from 'next/image'
-import styles from '../styles/Home.module.css'
+import Head from "next/head";
+import Image from "next/image";
+import styles from "../styles/Home.module.css";
+import { useState } from "react";
 
 export default function Home() {
+  const [isActive, setIsActive] = useState(false);
   return (
     <div className={styles.container}>
       <Head>
@@ -11,59 +13,212 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
-
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
-        </p>
-
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h2>Documentation &rarr;</h2>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h2>Learn &rarr;</h2>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/canary/examples"
-            className={styles.card}
-          >
-            <h2>Examples &rarr;</h2>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h2>Deploy &rarr;</h2>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
-      </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+      <main className="bg-green-500">
+        <div
+          className={`flex flex-row-reverse fixed right-8 bottom-5 transition-all duration-500 items-center overflow-hidden ${
+            isActive ? "-translate-y-36" : ""
+          }`}
         >
-          Powered by{' '}
-          <span className={styles.logo}>
-            <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
-          </span>
-        </a>
-      </footer>
+          <div className={`opacity-0 transition-all duration-500 ${isActive ? "opacity-100" : ""}`}>
+            <Image src="/whatsapp.svg" width={100} height={100} alt="whatsapp" />
+          </div>
+          <div
+            className={`relative bottom-2 rounded-xl py-2 px-4 transition-all duration-300 delay-200 bg-white  ${
+              isActive ? "translate-x-0" : "-translate-x-40"
+            }`}
+          >
+            <p className="">Hubungi Kami</p>
+          </div>
+        </div>
+        <div
+          className={`fixed right-8 bottom-5 flex flex-row-reverse transition-all duration-500 items-center overflow-hidden ${
+            isActive ? "translate-y-[-72px] " : ""
+          }`}
+        >
+          <div className={`opacity-0 transition-all duration-500 ${isActive ? "opacity-100" : ""}`}>
+            <Image src="/news.svg" width={100} height={100} alt="news" className="" />
+          </div>
+          <div
+            className={`relative bottom-2 rounded-xl py-2 px-4 transition-all duration-300 delay-200 bg-white -z-10 ${
+              isActive ? "translate-x-0" : "-translate-x-40"
+            }`}
+          >
+            <p className="items-center bg-white">Berlangganan</p>
+          </div>
+        </div>
+        <div></div>
+        <div
+          className={`fixed right-8 bottom-5 transition-all duration-300 ${
+            isActive ? "" : "opacity-0"
+          }`}
+        >
+          <Image src="/close.svg" width={100} height={100} alt="close" className="" />
+        </div>
+        <div
+          onClick={() => {
+            setIsActive(!isActive);
+          }}
+          className={`fixed right-5 bottom-5 transition-all duration-300 ${
+            isActive ? "opacity-0" : ""
+          }`}
+        >
+          <Image
+            src="/whatsapp-news.svg"
+            width={130}
+            height={130}
+            alt="whatsapp-news"
+            className=""
+          />
+        </div>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+        <h1> This is a title text</h1>
+      </main>
     </div>
-  )
+  );
 }
