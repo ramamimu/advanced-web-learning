@@ -2,8 +2,13 @@ import Head from "next/head";
 import Image from "next/image";
 import styles from "../styles/Home.module.css";
 import { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { increment, decrement, addBy } from "../store/counter-slice";
 
 export default function Home() {
+  const count = useSelector((state) => state.counter);
+  const dispatch = useDispatch();
+
   const [isActive, setIsActive] = useState(false);
   return (
     <div className={styles.container}>
@@ -14,6 +19,32 @@ export default function Home() {
       </Head>
 
       <main className="bg-green-500">
+        <h1>This is an example to testing my redux program</h1>
+        <p>result increment = {count}</p>
+        <button
+          onClick={() => {
+            dispatch(increment());
+          }}
+        >
+          increment
+        </button>
+        <br />
+        <button
+          onClick={() => {
+            dispatch(decrement());
+          }}
+        >
+          decrement
+        </button>
+        <br />
+        <button
+          onClick={() => {
+            dispatch(addBy(10));
+          }}
+        >
+          decrement 10
+        </button>
+        {/* fixed button */}
         <div
           className={`flex flex-row-reverse fixed right-8 bottom-5 transition-all duration-500 items-center overflow-hidden ${
             isActive ? "-translate-y-36" : ""
@@ -62,6 +93,7 @@ export default function Home() {
             isActive ? "opacity-0" : ""
           }`}
         >
+          <div></div>
           <Image
             src="/whatsapp-news.svg"
             width={130}
@@ -70,6 +102,8 @@ export default function Home() {
             className=""
           />
         </div>
+
+        {/* batas fixed button */}
         <h1> This is a title text</h1>
         <h1> This is a title text</h1>
         <h1> This is a title text</h1>
