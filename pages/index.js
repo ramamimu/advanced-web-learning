@@ -1,15 +1,63 @@
 import Head from "next/head";
 import Image from "next/image";
 import styles from "../styles/Home.module.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { increment, decrement, addBy } from "../store/counter-slice";
+import { Spinner } from "flowbite-react";
 
 export default function Home() {
   const count = useSelector((state) => state.counter);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isActive, setIsActive] = useState(false);
+
   const dispatch = useDispatch();
 
-  const [isActive, setIsActive] = useState(false);
+  const fetchApi = () => {
+    // console.log(isLoading);
+    // const isLoad = !isLoading;
+    setIsLoading(true);
+    fetch("https://reqres.in/api/users", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: "morpheus",
+        job: "leader",
+      }),
+    })
+      .then((res) => {
+        setIsLoading(false);
+        return res.json();
+      })
+      .then((data) => {
+        // setIsLoading({ isLoading: false });
+        console.log(data);
+      });
+  };
+
+  useEffect(() => {
+    setIsLoading(true);
+    fetch("https://reqres.in/api/users", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: "morpheus",
+        job: "leader",
+      }),
+    })
+      .then((res) => {
+        setIsLoading(false);
+        return res.json();
+      })
+      .then((data) => {
+        console.log(data);
+      });
+  }, []);
+
   return (
     <div className={styles.container}>
       <Head>
@@ -19,7 +67,21 @@ export default function Home() {
       </Head>
 
       <main className="bg-green-500">
-        <h1>This is an example to testing my redux program</h1>
+        <div role="status"></div>
+        <button
+          className="p-2 bg-white"
+          onClick={() => {
+            fetchApi();
+          }}
+        >
+          {" "}
+          {isLoading ? <Spinner /> : "Fetch API"}
+        </button>
+        {isLoading ? (
+          <h1>text loading ...</h1>
+        ) : (
+          <h1>This is an example to testing my redux program</h1>
+        )}{" "}
         <p>result increment = {count}</p>
         <button
           onClick={() => {
@@ -102,7 +164,6 @@ export default function Home() {
             className=""
           />
         </div>
-
         {/* batas fixed button */}
         <h1> This is a title text</h1>
         <h1> This is a title text</h1>
