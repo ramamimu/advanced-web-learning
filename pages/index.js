@@ -7,24 +7,70 @@ import { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { increment, decrement, addBy } from "../store/counter-slice";
 import { Spinner } from "flowbite-react";
-import { db } from "../firebase.config";
+import { db, auth } from "../firebase.config";
 import { collection, getDocs, updateDoc, doc, addDoc } from "firebase/firestore";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged,
+} from "firebase/auth";
 
 export default function Home() {
   const count = useSelector((state) => state.counter);
   const [isLoading, setIsLoading] = useState(true);
   const [isActive, setIsActive] = useState(false);
   const [fetchData, setFetchData] = useState({});
-  // const [email, setEmail] = useState("");
-  // const [password, setPassword] = useState("");
-  const inputEmail = useRef(null);
-  const inputPassword = useRef(null);
   const refCollectionFirebase = collection(db, "datas");
   const [dbFirebase, setDbFirebase] = useState([]);
   const [fireLoading, setFireLoading] = useState(false);
 
   const dispatch = useDispatch();
 
+  const inputEmail = useRef(null);
+  const inputPassword = useRef(null);
+  const [currentUsers, setCurrentUsers] = useState("");
+
+  // FIREBASE AUTHENTIFICATION
+  onAuthStateChanged(auth, (currentUser) => {
+    setCurrentUsers(currentUser?.email);
+  });
+
+  const login = async (e) => {
+    try {
+      const email = inputEmail.current.value;
+      const password = inputPassword.current.value;
+      await signInWithEmailAndPassword(auth, email, password);
+      inputEmail.current.value = "";
+      inputPassword.current.value = "";
+      console.log("success login to account");
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const register = async () => {
+    try {
+      const email = inputEmail.current.value;
+      const password = inputPassword.current.value;
+      await createUserWithEmailAndPassword(auth, email, password);
+      inputEmail.current.value = "";
+      inputPassword.current.value = "";
+      console.log("success create account");
+    } catch (e) {
+      console.log(e);
+    }
+  };
+  const logOut = async () => {
+    try {
+      await signOut(auth);
+      console.log("log out success");
+    } catch (e) {
+      console.log("log out fail ", e);
+    }
+  };
+
+  // FIRESTORE
   const addFirestoreData = async (x, y) => {
     try {
       await addDoc(refCollectionFirebase, { x: x, y: y });
@@ -38,8 +84,6 @@ export default function Home() {
     setFireLoading(true);
     const data = await getDocs(refCollectionFirebase);
     setFireLoading(false);
-    console.log(data.docs);
-    data.docs.forEach((doc) => console.log(doc.data(), doc.id));
     setDbFirebase(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
   };
 
@@ -64,17 +108,6 @@ export default function Home() {
       });
   };
 
-  const submitForm = (e) => {
-    e.preventDefault();
-    console.log(inputEmail.current.value);
-    console.log(inputPassword.current.value);
-    // lets say its been processing
-    setTimeout(() => {
-      inputEmail.current.value = "";
-      inputPassword.current.value = "";
-    }, 150);
-  };
-
   useEffect(() => {
     fetchApi();
     fetchFirestore();
@@ -90,6 +123,44 @@ export default function Home() {
 
       <main className="bg-green-500 min-h-[110vh]">
         <h1 className="text-3xl">Belajar FIREBASE</h1>
+        {/* firebase authentication */}
+        <button
+          onClick={() => logOut()}
+          type="submit"
+          className="p-2 block bg-white mt-2 text-black"
+        >
+          sign out
+        </button>
+        <h3>User Login: {currentUsers}</h3>
+        <h2 className="text-2xl">Authentification</h2>
+        <form
+          className="m-3"
+          onSubmit={(e) => {
+            e.preventDefault();
+          }}
+        >
+          <p>Email</p>
+          <input ref={inputEmail} type="text" name="email" placeholder="Email" required />
+          <p>Password</p>
+          <input
+            ref={inputPassword}
+            type="password"
+            name="password"
+            placeholder="Password"
+            required
+          />
+          <button
+            onClick={() => login()}
+            type="submit"
+            className="p-2 block bg-white mt-2 text-black"
+          >
+            Login
+          </button>
+          <button onClick={() => register()} type="submit" className="p-2 bg-white text-black mt-2">
+            Sign Up
+          </button>
+        </form>
+        {/* firestore */}
         <h2 className="text-2xl">Firestore</h2>
         <button
           onClick={() => {
@@ -123,25 +194,6 @@ export default function Home() {
             </div>
           ))
         )}
-        <h2 className="text-2xl">Authentification</h2>
-        <form className="m-3xl" onSubmit={submitForm}>
-          <p>Email</p>
-          <input ref={inputEmail} type="text" name="email" placeholder="Email" required />
-          <p>Password</p>
-          <input
-            ref={inputPassword}
-            type="password"
-            name="password"
-            placeholder="Password"
-            required
-          />
-          <button type="submit" className="p-2 block bg-white mt-2 text-black">
-            Login
-          </button>
-          <button type="submit" className="p-2 bg-white text-black mt-2">
-            Sign Up
-          </button>
-        </form>
         <h1 className="text-3xl">Belajar Fetch API, toast, dan fluently useEffect</h1>
         <div role="status"></div>
         <button
