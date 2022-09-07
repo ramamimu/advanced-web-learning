@@ -1,21 +1,49 @@
+/* eslint-disable react/no-unknown-property */
+/* eslint-disable react-hooks/exhaustive-deps */
 import Head from "next/head";
 import Image from "next/image";
 import styles from "../styles/Home.module.css";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { increment, decrement, addBy } from "../store/counter-slice";
 import { Spinner } from "flowbite-react";
+import { db } from "../firebase.config";
+import { collection, getDocs, updateDoc, doc, addDoc } from "firebase/firestore";
 
 export default function Home() {
   const count = useSelector((state) => state.counter);
   const [isLoading, setIsLoading] = useState(true);
   const [isActive, setIsActive] = useState(false);
+  const [fetchData, setFetchData] = useState({});
+  // const [email, setEmail] = useState("");
+  // const [password, setPassword] = useState("");
+  const inputEmail = useRef(null);
+  const inputPassword = useRef(null);
+  const refCollectionFirebase = collection(db, "datas");
+  const [dbFirebase, setDbFirebase] = useState([]);
+  const [fireLoading, setFireLoading] = useState(false);
 
   const dispatch = useDispatch();
 
+  const addFirestoreData = async (x, y) => {
+    try {
+      await addDoc(refCollectionFirebase, { x: x, y: y });
+      console.log("firestore data added successfully");
+    } catch (e) {
+      console.error("Error adding firestore data", e);
+    }
+  };
+
+  const fetchFirestore = async () => {
+    setFireLoading(true);
+    const data = await getDocs(refCollectionFirebase);
+    setFireLoading(false);
+    console.log(data.docs);
+    data.docs.forEach((doc) => console.log(doc.data(), doc.id));
+    setDbFirebase(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+  };
+
   const fetchApi = () => {
-    // console.log(isLoading);
-    // const isLoad = !isLoading;
     setIsLoading(true);
     fetch("https://reqres.in/api/users", {
       method: "POST",
@@ -32,30 +60,24 @@ export default function Home() {
         return res.json();
       })
       .then((data) => {
-        // setIsLoading({ isLoading: false });
-        console.log(data);
+        setFetchData({ ...data });
       });
   };
 
+  const submitForm = (e) => {
+    e.preventDefault();
+    console.log(inputEmail.current.value);
+    console.log(inputPassword.current.value);
+    // lets say its been processing
+    setTimeout(() => {
+      inputEmail.current.value = "";
+      inputPassword.current.value = "";
+    }, 150);
+  };
+
   useEffect(() => {
-    setIsLoading(true);
-    fetch("https://reqres.in/api/users", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        name: "morpheus",
-        job: "leader",
-      }),
-    })
-      .then((res) => {
-        setIsLoading(false);
-        return res.json();
-      })
-      .then((data) => {
-        console.log(data);
-      });
+    fetchApi();
+    fetchFirestore();
   }, []);
 
   return (
@@ -66,7 +88,61 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className="bg-green-500">
+      <main className="bg-green-500 min-h-[110vh]">
+        <h1 className="text-3xl">Belajar FIREBASE</h1>
+        <h2 className="text-2xl">Firestore</h2>
+        <button
+          onClick={() => {
+            addFirestoreData(Math.random(), Math.random());
+          }}
+          className="p-2 bg-white text-black mt-2"
+        >
+          Add Random data
+        </button>{" "}
+        <br />
+        <button
+          onClick={() => {
+            fetchFirestore();
+          }}
+          className="p-2 bg-white text-black mt-2"
+        >
+          Fetch data
+        </button>
+        {fireLoading ? (
+          <div>
+            <br />
+            <Spinner />
+          </div>
+        ) : (
+          dbFirebase.map((data) => (
+            <div key={data.id}>
+              <h3>Same Root</h3>
+              <p>id: {data.id}</p>
+              <p>x: {data.x}</p>
+              <p>y: {data.y}</p>
+            </div>
+          ))
+        )}
+        <h2 className="text-2xl">Authentification</h2>
+        <form className="m-3xl" onSubmit={submitForm}>
+          <p>Email</p>
+          <input ref={inputEmail} type="text" name="email" placeholder="Email" required />
+          <p>Password</p>
+          <input
+            ref={inputPassword}
+            type="password"
+            name="password"
+            placeholder="Password"
+            required
+          />
+          <button type="submit" className="p-2 block bg-white mt-2 text-black">
+            Login
+          </button>
+          <button type="submit" className="p-2 bg-white text-black mt-2">
+            Sign Up
+          </button>
+        </form>
+        <h1 className="text-3xl">Belajar Fetch API, toast, dan fluently useEffect</h1>
         <div role="status"></div>
         <button
           className="p-2 bg-white"
@@ -74,14 +150,16 @@ export default function Home() {
             fetchApi();
           }}
         >
-          {" "}
           {isLoading ? <Spinner /> : "Fetch API"}
         </button>
         {isLoading ? (
           <h1>text loading ...</h1>
         ) : (
-          <h1>This is an example to testing my redux program</h1>
-        )}{" "}
+          <h1>
+            {fetchData.name} {fetchData.job} {fetchData.id} {fetchData.createdAt}
+          </h1>
+        )}
+        <h1 className="text-3xl">Belajar Redux</h1>
         <p>result increment = {count}</p>
         <button
           onClick={() => {
@@ -164,155 +242,6 @@ export default function Home() {
             className=""
           />
         </div>
-        {/* batas fixed button */}
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
-        <h1> This is a title text</h1>
       </main>
     </div>
   );
