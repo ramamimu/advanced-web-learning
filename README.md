@@ -1,7 +1,7 @@
 ## What's in this project?
 
 > - react.js
-> - next.js (routing, SSR)
+> - next.js (routing, dynamic routing, SSR)
 > - tailwind css, tailwind library (flowbite, headless UI)
 > - react hook (useState, useEffect, useRef)
 > - redux
@@ -24,6 +24,8 @@
 > - WebGL
 
 ## To Do
+
+[] protected pages
 
 [] add prettier
 
